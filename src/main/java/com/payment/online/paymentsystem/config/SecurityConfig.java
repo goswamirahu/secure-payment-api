@@ -25,7 +25,7 @@ public class SecurityConfig {
 
                 // 2. SAB URLS ALLOW KARO (Testing ke liye)
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()  // ✅ SAB ALLOW
+                        .anyRequest().permitAll()  // 
                 )
 
                 // 3. DISABLE ALL SPRING SECURITY DEFAULTS
