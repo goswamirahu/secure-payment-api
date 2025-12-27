@@ -1,27 +1,70 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Transactions</title>
+    <title>Transaction History</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .credit { color: green; font-weight: bold; }
+        .debit { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
+
 <h2>Transaction History</h2>
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Amount</th>
-        <th>Type</th>
-        <th>Date</th>
-    </tr>
-    <tr th:each="txn : ${transactions}">
-        <td th:text="${txn.id}">1</td>
-        <td th:text="${txn.amount}">100.00</td>
-        <td th:text="${txn.type}">CREDIT</td>
-        <td th:text="${txn.timestamp}">2025-06-24</td>
-        <td th:text="${#temporals.format(txn.timestamp, 'yyyy-MM-dd HH:mm')}"></td>
+<a href="/api/user/dashboard">
+    <button>← Back to Dashboard</button>
+</a>
 
-    </tr>
-</table>
+<br><br>
+
+<div>
+    <h3>Account Summary</h3>
+    <p><strong>Total Balance:</strong> ₹<span th:text="${balance}">0</span></p>
+    <p><strong>Total Credit:</strong> ₹<span th:text="${totalCredit}">0</span></p>
+    <p><strong>Total Debit:</strong> ₹<span th:text="${totalDebit}">0</span></p>
+</div>
+
+<hr>
+
+<div th:if="${transactions != null and !transactions.empty}">
+    <h3>Your Transactions</h3>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Amount (₹)</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Date & Time</th>
+        </tr>
+        <tr th:each="t : ${transactions}">
+            <td th:text="${t.id}"></td>
+            <td th:text="${t.amount}"></td>
+            <td>
+                <span th:if="${t.type == 'CREDIT'}" class="credit">CREDIT</span>
+                <span th:if="${t.type == 'DEBIT'}" class="debit">DEBIT</span>
+            </td>
+            <td th:text="${t.description}"></td>
+            <td th:text="${t.timestamp}"></td>
+        </tr>
+    </table>
+</div>
+
+<div th:if="${transactions == null or transactions.empty}">
+    <p>No transactions found.</p>
+</div>
 
 </body>
 </html>

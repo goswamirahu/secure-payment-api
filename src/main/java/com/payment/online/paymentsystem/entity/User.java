@@ -1,11 +1,10 @@
 package com.payment.online.paymentsystem.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.payment.online.paymentsystem.entity.Transaction;
-
 
 @Entity
 @Table(name = "users")
@@ -15,18 +14,38 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String email;
+    @NotBlank(message = "Name is required")
+    @Column(nullable = false)
     private String name;
-    private String password;
-    private String role;
 
-    // One user can have many transactions
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private List<Transaction> transactions;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
+    @Column(unique = true, nullable = false)  // ADD THIS LINE
+    private String email;
+
+    @NotBlank(message = "Password is required")
+    @Column(nullable = false)  // ADD THIS LINE
+    private String password;
+
+    @Column(nullable = false)
+    private String role = "USER";
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Transaction> transactions = new ArrayList<>();
 
-    // Getters & Setters
+
+    public User() {
+    }
+
+
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = "USER";
+    }
+
+
     public Long getId() {
         return id;
     }
@@ -35,20 +54,20 @@ public class User {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -75,4 +94,3 @@ public class User {
         this.transactions = transactions;
     }
 }
-

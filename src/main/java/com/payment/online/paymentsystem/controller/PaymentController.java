@@ -2,50 +2,65 @@ package com.payment.online.paymentsystem.controller;
 
 import com.payment.online.paymentsystem.entity.Transaction;
 import com.payment.online.paymentsystem.entity.User;
-import com.payment.online.paymentsystem.service.TransactionService;
+import com.payment.online.paymentsystem.repository.TransactionRepository;
+import com.payment.online.paymentsystem.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
+@RequestMapping("/api/payments")
 public class PaymentController {
 
     @Autowired
-    private TransactionService transactionService;
+    private UserRepository userRepository;
 
+    @Autowired
+    private TransactionRepository transactionRepository;
 
-    @GetMapping("/payment")
-    public String showPaymentForm(Model model) {
-        model.addAttribute("transaction", new Transaction()); //
-        return "payment"; // payment.html Thymeleaf page
+    // Show payment form
+    @GetMapping("/make")
+    public String showPaymentPage(HttpSession session) {
+        User user = (User) session.getAttribute("USER");
+        if (user == null) return "redirect:/api/user/login";
+        return "payment";
     }
 
+    // Process payment
+    @PostMapping("/make")
+    public String makePayment(@RequestParam("amount") Double amount,
+                              @RequestParam("type") String type,
+                              @RequestParam("description") String description,
+                              HttpSession session) {
 
-    @PostMapping("/make-payment")
-    public String processPayment(@ModelAttribute("transaction") Transaction transaction, Model model) {
-        Long userId = 4l;
+        User sessionUser = (User) session.getAttribute("USER");
+        if (sessionUser == null) return "redirect:/api/user/login";
 
-        User user = new User();
-        user.setId(userId);
-        transaction.setUser(user);
-        transactionService.saveTransaction(transaction);
+        // Get fresh user from database
+        User user = userRepository.findById(sessionUser.getId()).orElse(null);
+        if (user == null) return "redirect:/api/user/login";
 
+        System.out.println("💳 Payment by " + user.getEmail());
+        System.out.println("Amount: ₹" + amount + ", Type: " + type);
 
-        model.addAttribute("message", "Payment successful!");
+        try {
+            // Create transaction
+            Transaction transaction = new Transaction();
+            transaction.setAmount(amount);
+            transaction.setType(type);
+            transaction.setDescription(description);
+            transaction.setUser(user);
 
-        return "redirect:/transactions"; //
-    }
+            // Save
+            Transaction saved = transactionRepository.save(transaction);
+            System.out.println("✅ Saved! Transaction ID: " + saved.getId());
 
-    @GetMapping("/transactions")
-    public String showTransactions(Model model) {
-        Long userId = 4L; // Temporary, replace with session ID later
+            return "redirect:/api/payments/make?success=true";
 
-        List<Transaction> transactions = transactionService.getTransactionsByUserId(userId);
-        model.addAttribute("transactions", transactions);
-
-        return "transactions"; // should match your transactions.html filename
+        } catch (Exception e) {
+            System.out.println("❌ Error: " + e.getMessage());
+            return "redirect:/api/payments/make?error=true";
+        }
     }
 }

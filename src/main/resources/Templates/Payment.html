@@ -4,21 +4,46 @@
     <title>Make Payment</title>
 </head>
 <body>
-<h2>Make a Payment</h2>
+<h2>Make Payment</h2>
 
-<form th:action="@{/make-payment}" th:object="${transaction}" method="post">
-    <label>Amount:</label>
-    <input type="number" th:field="*{amount}" step="0.01" required /><br/><br/>
+<!-- Session check -->
+<div th:if="${session.USER == null}" style="color:red;">
+    Please login first! <a href="/api/user/login">Login here</a>
+</div>
 
-    <label>Type:</label>
-    <select th:field="*{type}" required>
-        <option value="CREDIT">Credit</option>
-        <option value="DEBIT">Debit</option>
-    </select><br/><br/>
+<div th:if="${session.USER != null}">
+    <!-- Back to Dashboard -->
+    <a href="/api/user/dashboard">
+        <button>← Back to Dashboard</button>
+    </a>
+    <br/><br/>
 
-    <input type="hidden" th:field="*{user.id}" value="1" />
+    <!-- Messages -->
+    <div th:if="${param.success}" style="color:green; padding:10px; border:1px solid green;">
+        Payment successful!
+    </div>
 
-    <button type="submit">Submit Payment</button>
-</form>
+    <div th:if="${param.error}" style="color:red; padding:10px; border:1px solid red;">
+        Payment failed!
+    </div>
+
+    <!-- Payment Form -->
+    <form action="/api/payments/make" method="post">
+        <label>Amount (₹):</label><br>
+        <input type="number" name="amount" step="0.01" min="1" required><br><br>
+
+        <label>Transaction Type:</label><br>
+        <select name="type" required>
+            <option value="CREDIT">CREDIT (Receive Money)</option>
+            <option value="DEBIT">DEBIT (Send Money)</option>
+        </select><br><br>
+
+        <label>Description:</label><br>
+        <input type="text" name="description" placeholder="e.g., Food payment, Salary, etc." required><br><br>
+
+        <button type="submit">Process Payment</button>
+    </form>
+</div>
+
 </body>
 </html>

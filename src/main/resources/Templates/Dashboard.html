@@ -4,17 +4,32 @@
     <title>Dashboard</title>
 </head>
 <body>
-<h2>Welcome to Dashboard</h2>
 
-<!-- Make Payment Button -->
-<form th:action="@{/payment}" method="get">
-    <button type="submit">Make Payment</button>
-</form>
-<br/>
+<h2>Welcome, <span th:text="${user.name}">User</span>!</h2>
+<p>Email: <span th:text="${user.email}"></span></p>
+<hr>
 
-<!-- View Transactions Button -->
-<form th:action="@{/transactions}" method="get">
-    <button type="submit">View Transactions</button>
+<h3>Payment System Dashboard</h3>
+<p>You are successfully logged in!</p>
+
+<ul>
+    <li><a href="/api/user/test">Test User API</a></li>
+    <li><a href="/h2-console" target="_blank">Database Console</a></li>
+</ul>
+
+<br>
+<!-- ✅ UPDATED LINKS (UserController ke hisaab se) -->
+<a href="/api/user/payment">  <!-- Iske liye separate PaymentController hoga -->
+    <button>Make Payment</button>
+</a>
+
+<a href="/api/user/transactions">
+    <button>View Transactions</button>
+</a>
+
+<br><br>
+<form action="/api/user/logout" method="get">
+    <button type="submit">Logout</button>
 </form>
 
 </body>

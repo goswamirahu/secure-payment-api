@@ -4,7 +4,6 @@ import com.payment.online.paymentsystem.entity.Transaction;
 import com.payment.online.paymentsystem.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -20,6 +19,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Transaction> getTransactionsByUserId(Long userId) {
-        return transactionRepository.findByUserId(userId);
+        // ✅ Call the correct repository method
+        return transactionRepository.findByUser_Id(userId);
     }
 }
