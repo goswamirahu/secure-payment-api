@@ -23,12 +23,11 @@ public class SecurityConfig {
                 // 1. CSRF DISABLE (MUST for form submission)
                 .csrf(csrf -> csrf.disable())
 
-                // 2. SAB URLS ALLOW KARO (Testing ke liye)
+              
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()  // 
                 )
 
-                // 3. DISABLE ALL SPRING SECURITY DEFAULTS
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .logout(logout -> logout.disable());
