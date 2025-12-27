@@ -58,7 +58,7 @@ public class UserController {
         return "payment";
     }
 
-    // ✅ PAYMENT PROCESSING - TRANSACTION SAVE KARO
+    // ✅ PAYMENT PROCESSING -
     @PostMapping("/payments/make")
     public String makePayment(
             HttpSession session,
