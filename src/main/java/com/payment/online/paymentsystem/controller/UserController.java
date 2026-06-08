@@ -24,7 +24,7 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private TransactionService transactionService;  // ✅ Add this
+    private TransactionService transactionService;  
 
     // ========== PAGES ==========
     @GetMapping("/register")
@@ -47,7 +47,7 @@ public class UserController {
         return "dashboard";
     }
 
-    // ✅ PAYMENT PAGE
+   
     @GetMapping("/payment")
     public String paymentPage(HttpSession session, Model model) {
         User user = (User) session.getAttribute("USER");
@@ -58,7 +58,7 @@ public class UserController {
         return "payment";
     }
 
-    // ✅ PAYMENT PROCESSING -
+   -
     @PostMapping("/payments/make")
     public String makePayment(
             HttpSession session,
@@ -77,21 +77,21 @@ public class UserController {
         System.out.println("Type: " + type);
         System.out.println("Description: " + description);
 
-        // ✅ Create and save transaction
+       
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
         transaction.setType(type);
         transaction.setDescription(description);
-        transaction.setUser(user);  // ✅ User object set karo
+        transaction.setUser(user); 
 
         transactionService.saveTransaction(transaction);
 
-        System.out.println("✅ Transaction saved with ID: " + transaction.getId());
+        System.out.println(" Transaction saved with ID: " + transaction.getId());
 
         return "redirect:/api/user/payment?success=true";
     }
 
-    // ✅ TRANSACTIONS PAGE - REAL DATA
+    //  TRANSACTIONS PAGE - REAL DATA
     @GetMapping("/transactions")
     public String transactionsPage(HttpSession session, Model model) {
         User user = (User) session.getAttribute("USER");
@@ -99,7 +99,7 @@ public class UserController {
             return "redirect:/api/user/login";
         }
 
-        // ✅ REAL DATA from database
+        //  REAL DATA from database
         List<Transaction> transactions = transactionService.getTransactionsByUserId(user.getId());
 
         System.out.println("📊 Found " + (transactions != null ? transactions.size() : 0) +
@@ -153,7 +153,7 @@ public class UserController {
 
         // Save
         userRepository.save(user);
-        System.out.println("✅ User saved: " + user.getId());
+        System.out.println(" User saved: " + user.getId());
 
         return "redirect:/api/user/login?success=registered";
     }
@@ -170,7 +170,7 @@ public class UserController {
         // Find user
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            System.out.println("❌ User not found");
+            System.out.println(" User not found");
             model.addAttribute("error", "Invalid credentials");
             return "login";
         }
@@ -178,14 +178,14 @@ public class UserController {
         // Check password
         boolean passwordOk = passwordEncoder.matches(password, user.getPassword());
         if (!passwordOk) {
-            System.out.println("❌ Wrong password");
+            System.out.println(" Wrong password");
             model.addAttribute("error", "Invalid credentials");
             return "login";
         }
 
         // Login successful
         session.setAttribute("USER", user);
-        System.out.println("✅ LOGIN SUCCESS: " + user.getName() + " (ID: " + user.getId() + ")");
+        System.out.println(" LOGIN SUCCESS: " + user.getName() + " (ID: " + user.getId() + ")");
 
         return "redirect:/api/user/dashboard";
     }
