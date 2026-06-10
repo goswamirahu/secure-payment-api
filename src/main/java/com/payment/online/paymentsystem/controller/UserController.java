@@ -24,7 +24,11 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+<<<<<<< HEAD
     private TransactionService transactionService;  
+=======
+    private TransactionService transactionService;
+>>>>>>> f12c3c7 (Added Docker support and cleaned project)
 
     // ========== PAGES ==========
     @GetMapping("/register")
@@ -47,7 +51,11 @@ public class UserController {
         return "dashboard";
     }
 
+<<<<<<< HEAD
    
+=======
+
+>>>>>>> f12c3c7 (Added Docker support and cleaned project)
     @GetMapping("/payment")
     public String paymentPage(HttpSession session, Model model) {
         User user = (User) session.getAttribute("USER");
@@ -58,7 +66,7 @@ public class UserController {
         return "payment";
     }
 
-   -
+
     @PostMapping("/payments/make")
     public String makePayment(
             HttpSession session,
